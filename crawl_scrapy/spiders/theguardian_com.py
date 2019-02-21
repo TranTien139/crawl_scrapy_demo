@@ -10,15 +10,15 @@ from crawl_scrapy.helper.parser_detail import ParserDetail
 
 
 class BlogTienAo(scrapy.Spider):
-    name = 'blogtienao'
-    allowed_domain = ['blogtienao.com']
+    name = 'theguardian'
+    allowed_domain = ['theguardian.com']
 
     def __init__(self):
-        self.config = LoadConfig('blogtienao.com')
+        self.config = LoadConfig('theguardian.com')
 
     def start_requests(self):
         urls = [
-            'https://blogtienao.com'
+            'https://www.theguardian.com/international'
         ]
         for url in urls:
             yield Request(url, self.parse)
@@ -34,4 +34,3 @@ class BlogTienAo(scrapy.Spider):
 
     def parse_full_post(self, response):
         ParserDetail(response, self.config)
-

@@ -13,5 +13,7 @@ scrapy-splash==0.7.2
 # python .env
 python-dotenv==0.1.0
 
+# parser date
+dateparser==0.7.1
 
 

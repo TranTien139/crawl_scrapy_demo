@@ -1,26 +1,23 @@
 __author__ = 'TranTien'
 
-import time
-from crawl_scrapy.helper.database import Database
-
+# from crawl_scrapy.helper.database import Database
+from crawl_scrapy.helper.clean_time import CleanTime
 
 class ParserDetail:
     def __init__(self, response, config):
         result = {}
         try:
-            now = time.time()
-            result['title'] = response.selector.xpath(config.title).extract_first().encode('utf-8')
-            result['description'] = response.selector.xpath(config.description).extract_first().encode('utf-8')
-            result['content'] = ''.join(response.selector.xpath(config.content).extract()).encode('utf-8')
+            result['title'] = response.selector.xpath(config.title).extract_first()
+            result['description'] = response.selector.xpath(config.description).extract_first()
+            result['content'] = ''.join(response.selector.xpath(config.content).extract())
             result['thumbnail'] = response.selector.xpath(config.thumbnail).extract_first()
-            result['source'] = config.cf_domain
-            result['created_at'] = now
-            result['updated_at'] = now
-            result['origin_url'] = response.meta['url'].encode('utf-8')
-            result['published_at'] = None
+            result['source'] = response.meta['url']
+            result['date'] = response.selector.xpath(config.date).extract_first()
+            result['date'] = CleanTime().clean_date(result['date'])
+            result['category'] = response.selector.xpath(config.category).extract()
+            result['keyword'] = response.selector.xpath(config.keyword).extract()
             print('----------------------------------------------------------------')
             print(result)
-            Database()._insert_post(result)
             print('----------------------------------------------------------------')
         except Exception as e:
             print('co loi xay ra khi lay chi tiet bai viet', e)

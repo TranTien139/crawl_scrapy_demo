@@ -15,3 +15,6 @@ class LoadConfig:
         self.content = self.parse_cate.get(self.cf_domain, 'content_select')
         self.thumbnail = self.parse_cate.get(self.cf_domain, 'thumbnail_select')
         self.category_link = self.parse_cate.get(self.cf_domain, 'category_link_select')
+        self.date = self.parse_cate.get(self.cf_domain, 'date_select')
+        self.category = self.parse_cate.get(self.cf_domain, 'category_select')
+        self.keyword = self.parse_cate.get(self.cf_domain, 'keyword_select')
