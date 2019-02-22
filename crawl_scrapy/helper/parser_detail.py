@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# !/usr/bin/env python
 __author__ = 'TranTien'
 
 # from crawl_scrapy.helper.database import Database
@@ -14,8 +16,16 @@ class ParserDetail:
             result['source'] = response.meta['url']
             result['date'] = response.selector.xpath(config.date).extract_first()
             result['date'] = CleanTime().clean_date(result['date'])
-            result['category'] = response.selector.xpath(config.category).extract()
-            result['keyword'] = response.selector.xpath(config.keyword).extract()
+            result['category'] = []
+            categories = response.selector.xpath(config.category).extract()
+            for cate in categories:
+                result['category'].append(cate.strip())
+            result['keyword'] = []
+            keywords = response.selector.xpath(config.keyword).extract()
+            for key in keywords:
+                result['keyword'].append(key.strip())
+            result['keyword'] = ','.join(result['keyword'])
+            result['keyword'] = result['keyword'].split(',')
             print('----------------------------------------------------------------')
             print(result)
             print('----------------------------------------------------------------')
