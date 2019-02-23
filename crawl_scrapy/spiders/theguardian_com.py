@@ -10,7 +10,7 @@ from crawl_scrapy.helper.parser_detail import ParserDetail
 
 
 class BlogTienAo(scrapy.Spider):
-    name = 'theguardian'
+    name = 'theguardian.com'
     allowed_domain = ['theguardian.com']
 
     def __init__(self):

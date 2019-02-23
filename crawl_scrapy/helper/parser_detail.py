@@ -4,22 +4,44 @@ __author__ = 'TranTien'
 
 # from crawl_scrapy.helper.database import Database
 from crawl_scrapy.helper.clean_time import CleanTime
+import lxml, io, re
 
 class ParserDetail:
     def __init__(self, response, config):
         result = {}
         try:
-            result['title'] = response.selector.xpath(config.title).extract_first()
-            result['description'] = response.selector.xpath(config.description).extract_first()
-            result['content'] = ''.join(response.selector.xpath(config.content).extract())
-            result['thumbnail'] = response.selector.xpath(config.thumbnail).extract_first()
-            result['source'] = response.meta['url']
-            result['date'] = response.selector.xpath(config.date).extract_first()
+            result['title'] = response.selector.xpath(config.title).extract_first().strip()
+            result['description'] = response.selector.xpath(config.description).extract_first().strip()
+            result['content'] = ''.join(response.selector.xpath(config.content).extract()).strip()
+
+            html = result['content']
+            parser = lxml.etree.HTMLParser(encoding='utf-8', recover=True)
+            tree = lxml.etree.parse(io.StringIO(html), parser)
+            for element in tree.xpath('//*'):
+                for attr in element.attrib:
+                    try:
+                        del element.attrib[attr]
+                    except KeyError:
+                        pass
+            content = ''
+            for element in tree.xpath('//*'):
+                content += str(lxml.etree.tostring(element, pretty_print=True, xml_declaration=False)).strip()
+
+            content = content.replace("&nbsp;", " ")
+            content = content.replace("&#13;", "\n")
+            pattern = re.compile("\s*\n+\s*", re.MULTILINE)
+            content = re.sub(pattern, " ", content)
+
+            result['content'] = content
+            result['thumbnail'] = response.selector.xpath(config.thumbnail).extract_first().strip()
+            result['source'] = response.url
+            result['date'] = response.selector.xpath(config.date).extract_first().strip()
             result['date'] = CleanTime().clean_date(result['date'])
             result['category'] = []
             categories = response.selector.xpath(config.category).extract()
             for cate in categories:
-                result['category'].append(cate.strip())
+                if cate.strip() not in result['category']:
+                    result['category'].append(cate.strip())
             result['keyword'] = []
             keywords = response.selector.xpath(config.keyword).extract()
             for key in keywords:

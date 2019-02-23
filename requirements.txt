@@ -16,4 +16,7 @@ python-dotenv==0.1.0
 # parser date
 dateparser==0.7.1
 
+# lxml
+lxml==4.3.1
+
 
