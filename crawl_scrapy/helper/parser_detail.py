@@ -24,13 +24,16 @@ class ParserDetail:
                     except KeyError:
                         pass
             content = ''
-            for element in tree.xpath('//*'):
+            for element in tree.xpath('//body/*'):
                 content += str(lxml.etree.tostring(element, pretty_print=True, xml_declaration=False)).strip()
 
             content = content.replace("&nbsp;", " ")
             content = content.replace("&#13;", "\n")
-            pattern = re.compile("\s*\n+\s*", re.MULTILINE)
-            content = re.sub(pattern, " ", content)
+            content = content.replace("\\n'b'", "")
+            content = content.replace("\\n'", "")
+            content = content.replace("\\n", "")
+            pattern = re.compile(r"\&#\d{4};")
+            content = pattern.sub("", content)
 
             result['content'] = content
             result['thumbnail'] = response.selector.xpath(config.thumbnail).extract_first().strip()
