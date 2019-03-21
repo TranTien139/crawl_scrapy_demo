@@ -9,7 +9,7 @@ from crawl_scrapy.helper.init_config import LoadConfig
 from crawl_scrapy.helper.parser_detail import ParserDetail
 
 
-class BlogTienAo(scrapy.Spider):
+class Theguardian(scrapy.Spider):
     name = 'theguardian.com'
     allowed_domain = ['theguardian.com']
 

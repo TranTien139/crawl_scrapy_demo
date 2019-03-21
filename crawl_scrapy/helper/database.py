@@ -5,9 +5,10 @@ __author__ = 'TranTien'
 
 
 class Database:
-    def __init__(self, *args, **kwargs):
-        self.conn = MySQLdb.connect(settings['MYSQL_HOST'], settings['MYSQL_USER'], settings['MYSQL_PASSWORD'],
-                                    settings['MYSQL_DB'], charset="utf8", use_unicode=True)
+    def __init__(self):
+        self.conn = MySQLdb.connect(host=settings['MYSQL_HOST'], port=int(settings['MYSQL_PORT']),
+                                    user=settings['MYSQL_USER'], passwd=settings['MYSQL_PASSWORD'],
+                                    db=settings['MYSQL_DB'], charset="utf8", use_unicode=True)
         self.cursor = self.conn.cursor()
 
     def _insert_post(self, item):
@@ -19,6 +20,19 @@ class Database:
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)""",
                                     (item["title"], item["description"], item["content"], item["origin_url"],
                                      item['source'], item["created_at"], item["updated_at"], item["published_at"]))
+                self.conn.commit()
+                print('Luu du lieu thanh cong')
+            return item
+        except Exception as e:
+            print('Co loi xay ra khi luu post', e)
+            return item
+
+    def _insert_nation(self, item):
+        try:
+            check = self.cursor.execute("""SELECT * FROM nations WHERE name=%s""", [item['nation']])
+            if not check:
+                self.cursor.execute("""INSERT INTO nations (name, capital)
+                 VALUES (%s, %s)""", (item["nation"], item["capital"]))
                 self.conn.commit()
                 print('Luu du lieu thanh cong')
             return item
