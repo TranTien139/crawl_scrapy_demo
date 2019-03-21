@@ -6,6 +6,7 @@ __author__ = 'TranTien'
 import scrapy
 from scrapy.http import Request
 from crawl_scrapy.helper.database import Database
+from slugify import slugify
 
 
 class Geographyfieldwork(scrapy.Spider):
@@ -30,7 +31,15 @@ class Geographyfieldwork(scrapy.Spider):
                 result['nation'] = item.xpath('td[@height=17][1]/text()').extract_first()
                 result['capital'] = item.xpath('td[@height=17][2]/text()').extract_first()
                 if result['nation'] and result['capital']:
-                    Database()._insert_nation(result)
-                    print(result)
+                    # Database()._insert_nation(result)
+                    url = 'https://www.worlddata.info/'+ slugify(result['nation']) + '/index.php'
+                    yield Request(url, callback=self.parser_city, meta={}, method='get')
         except Exception as e:
             print('co loi xay ra khi lay link bai viet', e)
+
+    def parser_city(self, response):
+        datas = response.xpath('//*/div[@id="country_b1"]/table[@class="std100 hover"]')
+        for item in datas[1:]:
+            result = dict()
+            result['city'] = item.xpath('td[1]/text()').extract_first()
+            print(result)
