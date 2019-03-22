@@ -10,7 +10,7 @@ from slugify import slugify
 
 
 class Geographyfieldwork(scrapy.Spider):
-    name = 'geographyfieldwork'
+    name = 'crawler_nation'
     allowed_domain = ['geographyfieldwork.com']
 
     def __init__(self):
@@ -28,18 +28,9 @@ class Geographyfieldwork(scrapy.Spider):
             datas = response.xpath('//*/table[@id="anyid"]/tr')
             for item in datas[1:]:
                 result = dict()
-                result['nation'] = item.xpath('td[@height=17][1]/text()').extract_first()
+                result['name'] = item.xpath('td[@height=17][1]/text()').extract_first()
                 result['capital'] = item.xpath('td[@height=17][2]/text()').extract_first()
-                if result['nation'] and result['capital']:
-                    # Database()._insert_nation(result)
-                    url = 'https://www.worlddata.info/'+ slugify(result['nation']) + '/index.php'
-                    yield Request(url, callback=self.parser_city, meta={}, method='get')
+                if result['name'] and result['capital']:
+                    Database()._insert_nation(result)
         except Exception as e:
             print('co loi xay ra khi lay link bai viet', e)
-
-    def parser_city(self, response):
-        datas = response.xpath('//*/div[@id="country_b1"]/table[@class="std100 hover"]')
-        for item in datas[1:]:
-            result = dict()
-            result['city'] = item.xpath('td[1]/text()').extract_first()
-            print(result)

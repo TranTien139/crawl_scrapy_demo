@@ -29,13 +29,34 @@ class Database:
 
     def _insert_nation(self, item):
         try:
-            check = self.cursor.execute("""SELECT * FROM nations WHERE name=%s""", [item['nation']])
+            check = self.cursor.execute("""SELECT * FROM nations WHERE name=%s""", [item['name']])
             if not check:
-                self.cursor.execute("""INSERT INTO nations (name, capital)
-                 VALUES (%s, %s)""", (item["nation"], item["capital"]))
+                self.cursor.execute("""INSERT INTO nations (name, capital) VALUES (%s, %s)""", (item["name"], item["capital"]))
                 self.conn.commit()
                 print('Luu du lieu thanh cong')
             return item
         except Exception as e:
             print('Co loi xay ra khi luu post', e)
+            return item
+
+
+    def _get_nation(self):
+        try:
+            self.cursor.execute("""SELECT * FROM nations limit 0, 210""")
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            print('Co loi xay ra khi luu post', e)
+            return None
+
+    def _insert_province(self, item):
+        try:
+            check = self.cursor.execute("""SELECT * FROM provinces WHERE name=%s AND nation_id=%s""", [item['name'], int(item["nation_id"])])
+            if not check:
+                self.cursor.execute("""INSERT INTO provinces (name, nation_id) VALUES (%s, %s)""", (item["name"], int(item["nation_id"])))
+                self.conn.commit()
+                print('Luu du city thanh cong')
+            return item
+        except Exception as e:
+            print('Co loi xay ra khi luu city', e)
             return item
