@@ -29,8 +29,8 @@ class Geographyfieldwork(scrapy.Spider):
             for item in datas[1:]:
                 result = dict()
                 result['name'] = item.xpath('td[@height=17][1]/text()').extract_first()
-                result['capital'] = item.xpath('td[@height=17][2]/text()').extract_first()
-                if result['name'] and result['capital']:
+                # result['capital'] = item.xpath('td[@height=17][2]/text()').extract_first()
+                if result['name']:
                     Database()._insert_nation(result)
         except Exception as e:
             print('co loi xay ra khi lay link bai viet', e)
