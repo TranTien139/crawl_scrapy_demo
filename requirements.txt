@@ -8,7 +8,7 @@ mysqlclient==1.3.12
 configparser==3.7.1
 
 # splash
-scrapy-splash==0.7.2
+scrapy-splash==0.8.0
 
 # python .env
 python-dotenv==0.1.0
